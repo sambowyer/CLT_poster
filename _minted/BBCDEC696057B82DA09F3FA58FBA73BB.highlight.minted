@@ -1,0 +1,4 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{scipy}\PYG{o}{.}\PYG{n}{stats}\PYG{o}{.}\PYG{n}{binomtest}\PYG{p}{(}\PYG{n}{k}\PYG{o}{=}\PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{y}\PYG{p}{)}\PYG{p}{,} \PYG{n}{n}\PYG{o}{=}\PYG{n}{N}\PYG{p}{)}
+\PYG{n}{wilson\PYGZus{}ci} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{proportion\PYGZus{}ci}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{wilson}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+m+mf}{0.95}\PYG{p}{)}
+\end{MintedVerbatim}

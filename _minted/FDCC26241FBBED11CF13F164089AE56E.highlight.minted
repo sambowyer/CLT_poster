@@ -1,0 +1,4 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{posterior} \PYG{o}{=} \PYG{n}{scipy}\PYG{o}{.}\PYG{n}{stats}\PYG{o}{.}\PYG{n}{beta}\PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{+} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{y}\PYG{p}{)}\PYG{p}{,} \PYG{l+m+mi}{1} \PYG{o}{+} \PYG{n}{N} \PYG{o}{\PYGZhy{}} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{y}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{bayes\PYGZus{}ci}  \PYG{o}{=} \PYG{n}{posterior}\PYG{o}{.}\PYG{n}{interval}\PYG{p}{(}\PYG{n}{confidence}\PYG{o}{=}\PYG{l+m+mf}{0.95}\PYG{p}{)}
+\end{MintedVerbatim}

@@ -1,113 +1,3 @@
-% Gemini theme
-% https://github.com/anishathalye/gemini
-
-\documentclass[final]{beamer}
-
-% ====================
-% Packages
-% ====================
-
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage[size=custom,width=120,height=72,scale=1.0]{beamerposter}
-\usetheme{gemini}
-\usecolortheme{bristol}
-\usepackage{graphicx}
-\usepackage{booktabs}
-\usepackage{tikz}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.14}
-\usepackage{anyfontsize}
-
-\usepackage{minted}
-\setminted[python]{
-    linenos,
-    % bgcolor=LightGray,
-    % breaklines,
-    fontsize=\scriptsize,
-    % xleftmargin=1.1em,
-    numbersep=4pt
-}
-
-\usepackage{tcolorbox}
-
-\newtcolorbox[auto counter]{pbox}[2][]{
-  colback=white,
-  title=#2,
-  #1,
-  fonttitle= \large, %\sffamily,
-  % fontupper=\sffamily,
-  boxrule=0.5pt, 
-  arc=2pt,
-  top=1pt, 
-  bottom=1pt,
-  before={\vspace{2pt}}, 
-  after={\vspace{2pt}} 
-  % colframe=..,
-  % coltitle=..,
-  % colbacktitle=..,
-  % toptitle=0.05cm,
-  % bottomtitle=0.125cm
-}
-
-\usepackage{fancyvrb}
-
-% ====================
-% Lengths
-% ====================
-
-% If you have N columns, choose \sepwidth and \colwidth such that
-% (N+1)*\sepwidth + N*\colwidth = \paperwidth
-\newlength{\sepwidth}
-\newlength{\colwidth}
-\setlength{\sepwidth}{0.025\paperwidth}
-\setlength{\colwidth}{0.3\paperwidth}
-
-\newcommand{\separatorcolumn}{\begin{column}{\sepwidth}\end{column}}
-
-% ====================
-% Title
-% ====================
-
-\title{Position: Don't Use the CLT in LLM Evals With Fewer Than a Few Hundred Datapoints \quad \huge{(...it's \textit{really} easy to do \textit{a lot} better!)}}
-
-\author{Sam Bowyer \inst{1} \and Laurence Aitchison \inst{1, \star} \and Desi R. Ivanova \inst{2,\star}}
-
-\institute[shortinst]{\inst{1} University of Bristol \samelineand \inst{2} University of Oxford \samelineand \inst{\star} Equal Contribution}
-
-% ====================
-% Footer (optional)
-% ====================
-
-\footercontent{
-  \href{https://github.com/sambowyer/bayes_evals}{github.com/sambowyer/bayes\_evals} \hfill
-  ICML 2025 Spotlight Position Paper \hfill
-  \href{mailto:sam.bowyer@bristol.ac.uk}{sam.bowyer@bristol.ac.uk}}
-% (can be left out to remove footer)
-
-% ====================
-% Logo (optional)
-% ====================
-
-% use this to include logos on the left and/or right side of the header:
-% \logoright{\includegraphics[height=7cm]{logo1.pdf}}
-% \logoleft{\includegraphics[height=7cm]{logo2.pdf}}
-
-% ====================
-% Body
-% ====================
-
-\begin{document}
-
-% \addtobeamertemplate{headline}{} 
-% {
-%     \begin{tikzpicture}[remember picture,overlay] 
-%     \node [anchor=north east, inner sep=1cm] at ([xshift=0cm,yshift=4.25cm]current page.north east)     {\includegraphics[height=15cm]{fig/logos/UoB_logo_White_24.pdf}}; 
-%     \end{tikzpicture} 
-% }
-\logoright{\includegraphics[height=15cm]{fig/logos/UoB_logo_White_24.pdf}}
-
-\begin{frame}[fragile]
 \begin{columns}[t]
 \separatorcolumn
 
@@ -139,7 +29,7 @@
     \end{figure}
 
     As LLM capabilities improve, it's becoming more common to run small-$N$ benchmarks, for which CLT-based error bars can collapse to zero-width or extend past [0,1].
-    
+
   \end{exampleblock}
 
   \begin{exampleblock}{2. Simulation Setup}
@@ -173,7 +63,7 @@
     $$
     \begin{aligned}
       \theta &\sim \text{Beta}(1, 1) = \text{Uniform}[0, 1] \\
-      y_i &\sim \text{Bernoulli}(\theta) \; \text{for } i=1,\dots N 
+      y_i &\sim \text{Bernoulli}(\theta) \; \text{for } i=1,\dots N
     \end{aligned}
     $$
     Use quantiles of closed-form posterior to construct $1-\alpha$ CIs:
@@ -199,7 +89,7 @@ bayes_ci  = posterior.interval(confidence=0.95)
     $$
     \text{CI}_{1-\alpha, \text{Wilson}} = \frac{\hat{\theta} + \frac{z_{\alpha/2}^2}{2N}}{1 + \frac{z_{\alpha/2}^2}{N}} \pm \frac{\frac{z_{\alpha/2}}{2N}}{1 + \frac{z_{\alpha/2}^2}{N}}\sqrt{4N\hat{\theta}(1 - \hat{\theta}) + z_{\alpha/2}^2}.
     $$
-    % where $z_{\alpha/2}$ is the $(1-\alpha/2)$-th quantile of $\mathcal{N}(0, 1)$. 
+    % where $z_{\alpha/2}$ is the $(1-\alpha/2)$-th quantile of $\mathcal{N}(0, 1)$.
 
     % code
     \begin{pbox}[label={ex:wilson_simple}]{Wilson-Score Confidence Interval}
@@ -223,7 +113,7 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
     % \begin{center}
     %   \rule{0.8\textwidth}{0.4pt}
     % \end{center}
-  
+
   \end{block}
 
   \vspace{-1em}
@@ -250,7 +140,7 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
       \item \textbf{Clustered Questions} --- instead of $N$ IID questions, we have $T$ tasks, each with $N_t$ IID questions. Bayesian model:
       $$
         \begin{aligned}
-        d &\sim \text{Gamma}(1, 1), \quad 
+        d &\sim \text{Gamma}(1, 1), \quad
         \theta \sim \text{Beta}(1, 1), \quad \\
         \theta_t &\sim \text{Beta}(d \theta, d (1-\theta)), \quad
         y_{i,t} \sim \text{Bernoulli}(\theta_t)
@@ -264,7 +154,7 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
     \end{figure}
       \item \textbf{Independent Comparisons} --- Compare $\theta_A$ and $\theta_B$ for two different models, with access \textit{only} to $N_A, N_B, \hat{\theta}_A,$ and $\hat{\theta}_B$.
       \item \textbf{Paired Comparisons} --- Compare $\theta_A$ and $\theta_B$ for two different models, each with the same $N$ IID questions and access to question-level successes $\{y_{A;i}\}_{i=1}^N$ and $\{y_{B;i}\}_{i=1}^N$.
-      \item \textbf{Metrics that aren't simple averages of binary results} --- e.g. F1 score (harmonic mean of precision and recall).    
+      \item \textbf{Metrics that aren't simple averages of binary results} --- e.g. F1 score (harmonic mean of precision and recall).
     \end{itemize}
 
     We construct Bayesian credible intervals that outperform the CLT-based intervals in all settings.
@@ -273,14 +163,14 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
 
   \begin{alertblock}{6. Recommendations}
 
-    
+
 
     % two-column of figures
     \begin{columns}
       \begin{column}{0.7\textwidth}
         \begin{itemize}
           \item \textbf{IID setting}: use Bayesian Beta-Bernoulli credible intervals or Wilson-score confidence intervals via \large{\begin{verbatim}scipy\end{verbatim}} or equivalent.
-          
+
           \item \textbf{Other settings}: use Bayesian credible intervals as implemented in our simple package \large{\begin{verbatim}bayes_evals\end{verbatim}}.
         \end{itemize}
       \end{column}
@@ -293,7 +183,7 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
         \end{figure}
 
         \vspace{0.5em}
-      
+
         \begin{figure}
           \centering
           \includegraphics[width=0.6\textwidth]{fig/github_qr.png}
@@ -315,6 +205,3 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
 
 \separatorcolumn
 \end{columns}
-\end{frame}
-
-\end{document}
