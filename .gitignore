@@ -1,0 +1,15 @@
+# output
+*.pdf
+!poster.pdf
+
+# intermediate files
+*.aux
+*.bbl
+*.blg
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.fdb_latexmk
+*.fls
