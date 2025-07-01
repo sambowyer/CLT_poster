@@ -69,7 +69,7 @@
 % Title
 % ====================
 
-\title{Position: Don't Use the CLT in LLM Evals With Fewer Than a Few Hundred Datapoints \quad \huge{(...it's \textit{really} easy to do \textit{a lot} better!)}}
+\title{Position: Don't Use the CLT in LLM Evals With Fewer \\ \vspace{1cm} Than a Few Hundred Datapoints \quad \huge{(...it's \textit{really} easy to do \textit{a lot} better!)}}
 
 \author{Sam Bowyer \inst{1} \and Laurence Aitchison \inst{1, \star} \and Desi R. Ivanova \inst{2,\star}}
 
@@ -102,10 +102,23 @@
 % \addtobeamertemplate{headline}{} 
 % {
 %     \begin{tikzpicture}[remember picture,overlay] 
-%     \node [anchor=north east, inner sep=1cm] at ([xshift=0cm,yshift=4.25cm]current page.north east)     {\includegraphics[height=15cm]{fig/logos/UoB_logo_White_24.pdf}}; 
+%     \node [anchor=north east, inner sep=1cm] at ([xshift=0cm,yshift=4.25cm]current page.north east) {
+%         \includegraphics[height=15cm]{fig/logos/UoB_logo_White_24.pdf}
+%       }; 
 %     \end{tikzpicture} 
 % }
-\logoright{\includegraphics[height=15cm]{fig/logos/UoB_logo_White_24.pdf}}
+% \logoright{\includegraphics[height=15cm]{fig/logos/UoB_logo_White_24.pdf}}
+\logoright{
+  % \begin{center}
+    % \includegraphics[height=15cm]{fig/logos/oxford.png}
+    % \\
+    % \includegraphics[height=15cm]{fig/logos/UoB_logo_White_24.pdf}
+  % \end{center}
+  % \includegraphics[height=13cm,clip=true,trim=2cm 2cm 2cm 2cm]{fig/logos/combined_logo.pdf}
+  % \vspace{1.5cm}
+  \includegraphics[height=10cm]{fig/logos/combined_logo.pdf}
+  \vspace{2cm}
+}
 
 \begin{frame}[fragile]
 \begin{columns}[t]
@@ -134,11 +147,12 @@
 
     \begin{figure}
       \centering
-      \includegraphics[width=0.7\textwidth]{fig/langchain_clt.png}
-      % \caption{}
+      \includegraphics[width=0.95\textwidth]{fig/PLOTS_FINAL_GREY/pdfs/real_data_langchain_poster_plot.pdf}
+      % \caption{Langchain Typewriter tool-use benchmark ($N=20$).}
     \end{figure}
 
-    As LLM capabilities improve, it's becoming more common to run small-$N$ benchmarks, for which CLT-based error bars can collapse to zero-width or extend past [0,1].
+    % As LLM capabilities improve, it's becoming more common to run small-$N$ benchmarks, for which CLT-based error bars can \textbf{collapse to zero-width} or \textbf{extend past [0,1]}.
+    As LLM capabilities improve, it's becoming more common to run small-$N$ benchmarks, such as the Langchain Typewriter tool-use benchmark shown above ($N=20$).
     
   \end{exampleblock}
 
@@ -258,7 +272,7 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
       $$
     \begin{figure}
       \centering
-      \includegraphics[width=0.95\textwidth]{fig/pdfs/exp4-2_alpha_only.pdf}
+      \includegraphics[width=0.95\textwidth]{fig/PLOTS_FINAL_GREY/pdfs/exp4-2_alpha_only.pdf}
       % \vspace{-1em}
       % \caption{\textbf{Clustered questions setting}: with $N_t = 5$ questions per task.}
     \end{figure}
@@ -267,7 +281,7 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
       \item \textbf{Metrics that aren't simple averages of binary results} --- e.g. F1 score (harmonic mean of precision and recall).    
     \end{itemize}
 
-    We construct Bayesian credible intervals that outperform the CLT-based intervals in all settings.
+    We construct Bayesian credible intervals that outperform CLT-based intervals in all settings; implemented in \textbf{\texttt{bayes\_evals}}.
 
   \end{exampleblock}
 
@@ -279,9 +293,9 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
     \begin{columns}
       \begin{column}{0.7\textwidth}
         \begin{itemize}
-          \item \textbf{IID setting}: use Bayesian Beta-Bernoulli credible intervals or Wilson-score confidence intervals via \large{\begin{verbatim}scipy\end{verbatim}} or equivalent.
+          \item \textbf{IID setting}: use Bayesian Beta-Bernoulli credible intervals or Wilson-score confidence intervals via \textbf{\texttt{scipy}} or equivalent.
           
-          \item \textbf{Other settings}: use Bayesian credible intervals as implemented in our simple package \large{\begin{verbatim}bayes_evals\end{verbatim}}.
+          \item \textbf{Other settings}: use Bayesian credible intervals as implemented in our simple package \textbf{\texttt{bayes\_evals}}.
         \end{itemize}
       \end{column}
       \begin{column}{0.3\textwidth}
