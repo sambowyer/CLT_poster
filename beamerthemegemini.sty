@@ -136,27 +136,29 @@
       \end{column}
       \begin{column}{\dimexpr\paperwidth-\maxlogowidth}%-\maxlogowidth}
         \usebeamerfont{headline}
-        % \vskip3ex
-        % \vspace{5ex}
+        % \vskip1ex
+        % \vspace{-1.25ex}
         % \centering
         \ifx \inserttitle \empty \else
-        {\usebeamerfont{headline title}\usebeamercolor[fg]{headline title}\inserttitle\\[0.1ex]}
+        {\usebeamerfont{headline title}\usebeamercolor[fg]{headline title}\vskip0pt\inserttitle\\[0.1ex]}
         \fi
         \ifx \beamer@shortauthor \empty \else
         {\usebeamerfont{headline author}\usebeamercolor[fg]{headline author}\insertauthor}%\\[1ex]}
         \fi\hspace{10ex}
         \ifx \insertinstitute \empty \else
-        {\usebeamerfont{headline institute}\usebeamercolor[fg]{headline institute}\insertinstitute}%\\[1ex]}
+        {\usebeamerfont{headline institute}\usebeamercolor[fg]{headline institute}\insertinstitute\\[1ex]\vspace{1cm}}
         \fi
       \end{column}
       \begin{column}{\maxlogowidth}
         \vskip2ex
         \ifdefined\insertlogoright
         % \vspace*{\fill}
+        % \vspace{-1.5cm}
         \raggedleft
         \insertlogoright
         \hspace{10ex}
         % \vspace*{\fill}
+        % \vspace{0.5cm}
         \else\fi
       \end{column}
     \end{columns}
@@ -255,13 +257,13 @@
     \ifbeamercolorempty[bg]{headline rule}{}{
       \begin{beamercolorbox}[wd=\paperwidth,colsep=0.25ex]{headline rule}\end{beamercolorbox}
     }
-    \vspace{1.5ex}
+    \vspace{1ex}
     \hspace{\sepwidth}
     \usebeamerfont{footline}
     \centering
     \insertfootercontent
     \hspace{\sepwidth}
-    \vspace{1.5ex}
+    \vspace{1ex}
   \end{beamercolorbox}
   \else\fi
 }

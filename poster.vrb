@@ -16,9 +16,9 @@
       \rule{0.8\textwidth}{0.4pt}
     \end{center}
 
-    \textbf{CLT-based confidence interval} on binary data $y_i \in \{0, 1\}$ (incorrect/correct) for $i = 1, \ldots, N$:
+    \textbf{CLT-based confidence interval} on binary data $y_i \in \{0, 1\}$ (incorrect/correct) for $i=1,\ldots,N$, with standard error $\sqrt{\bar{y}(1-\bar{y})/N}$:
     $$
-    \text{CI}_{1-\alpha} = \bar{y} \pm z_{\alpha/2} \sqrt{\bar{y}(1-\bar{y})/N},
+    \text{CI}_{1-\alpha} = \bar{y} \pm z_{\alpha/2} \text{SE}(\bar{y}),
     $$
     where $z_{\alpha/2}$ is the $(1-\alpha/2)$-th quantile of $\mathcal{N}(0, 1)$.
 
@@ -29,7 +29,7 @@
     \end{figure}
 
     % As LLM capabilities improve, it's becoming more common to run small-$N$ benchmarks, for which CLT-based error bars can \textbf{collapse to zero-width} or \textbf{extend past [0,1]}.
-    As LLM capabilities improve, it's becoming more common to run small-$N$ benchmarks, such as the Langchain Typewriter tool-use benchmark shown above ($N=20$).
+    As LLM capabilities improve, it's becoming more common to run small-$N$ benchmarks, e.g. the Langchain Typewriter tool-use benchmark shown above ($N=20$).
 
   \end{exampleblock}
 
@@ -60,7 +60,7 @@
 
   \begin{block}{3. Alternative Interval Construction}
 
-    \textbf{Bayesian Beta-Bernoulli credible interval} --- uniform prior on $\theta$:
+    \textbf{Bayesian Beta-Bernoulli credible interval} --- uniform prior over probability of success $\theta$:
     $$
     \begin{aligned}
       \theta &\sim \text{Beta}(1, 1) = \text{Uniform}[0, 1] \\
@@ -86,14 +86,14 @@ bayes_ci  = posterior.interval(confidence=0.95)
       \rule{0.8\textwidth}{0.4pt}
     \end{center}
 
-    \textbf{Wilson-Score confidence interval} --- based on binomial distribution:
+    \textbf{Wilson Score confidence interval} --- based on binomial distribution:
     $$
     \text{CI}_{1-\alpha, \text{Wilson}} = \frac{\hat{\theta} + \frac{z_{\alpha/2}^2}{2N}}{1 + \frac{z_{\alpha/2}^2}{N}} \pm \frac{\frac{z_{\alpha/2}}{2N}}{1 + \frac{z_{\alpha/2}^2}{N}}\sqrt{4N\hat{\theta}(1 - \hat{\theta}) + z_{\alpha/2}^2}.
     $$
     % where $z_{\alpha/2}$ is the $(1-\alpha/2)$-th quantile of $\mathcal{N}(0, 1)$.
 
     % code
-    \begin{pbox}[label={ex:wilson_simple}]{Wilson-Score Confidence Interval}
+    \begin{pbox}[label={ex:wilson_simple}]{Wilson Score Confidence Interval}
     \begin{minted}[fontsize=\large,breaklines]{python}
 result = scipy.stats.binomtest(k=sum(y), n=N)
 wilson_ci = result.proportion_ci("wilson", 0.95)
@@ -138,48 +138,58 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
   \begin{exampleblock}{5. Other Settings}
 
     \begin{itemize}
-      \item \textbf{Clustered Questions} --- instead of $N$ IID questions, we have $T$ tasks, each with $N_t$ IID questions. Bayesian model:
+      \item \textbf{Clustered Questions} --- $T$ tasks, each with $N_t$ IID questions.
+      Clustered CLT uses a different standard error formulation:
+      $$
+      \text{SE}_\text{clust.} = \sqrt{\text{SE}_\text{CLT}^2 + \frac{1}{N^2}\sum_{t=1}^T \sum_{i=1}^{N_t} \sum_{j \neq i} (y_{i,t} - \bar{y})(y_{j,t} - \bar{y})}.
+      % \text{SE}_\text{clust.} = \sqrt{\text{SE}_\text{CLT}^2 + (1/N^2)\sum_{t=1}^T \sum_{i=1}^{N_t} \sum_{j \neq i} (y_{i,t} - \bar{y})(y_{j,t} - \bar{y})}.
+      $$
+      Bayesian credible interval found via importance sampling:
       $$
         \begin{aligned}
-        d &\sim \text{Gamma}(1, 1), \quad
-        \theta \sim \text{Beta}(1, 1), \quad \\
+        \theta &\sim \text{Beta}(1, 1), \quad
+        &&d \sim \text{Gamma}(1, 1), \quad \\
         \theta_t &\sim \text{Beta}(d \theta, d (1-\theta)), \quad
-        y_{i,t} \sim \text{Bernoulli}(\theta_t)
+        y_{i,&&t} \sim \text{Bernoulli}(\theta_t).
         \end{aligned}
       $$
+
     \begin{figure}
       \centering
       \includegraphics[width=0.95\textwidth]{fig/PLOTS_FINAL_GREY/pdfs/exp4-2_alpha_only.pdf}
       % \vspace{-1em}
       % \caption{\textbf{Clustered questions setting}: with $N_t = 5$ questions per task.}
     \end{figure}
-      \item \textbf{Independent Comparisons} --- Compare $\theta_A$ and $\theta_B$ for two different models, with access \textit{only} to $N_A, N_B, \hat{\theta}_A,$ and $\hat{\theta}_B$.
+      \item \textbf{Independent Comparisons} --- Compare $\theta_A$ and $\theta_B$ for two different models, with access \textit{only} to $N_A, N_B, \bar{y}_A,$ and $\bar{y}_B$.
       \item \textbf{Paired Comparisons} --- Compare $\theta_A$ and $\theta_B$ for two different models, each with the same $N$ IID questions and access to question-level successes $\{y_{A;i}\}_{i=1}^N$ and $\{y_{B;i}\}_{i=1}^N$.
-      \item \textbf{Metrics that aren't simple averages of binary results} --- e.g. F1 score (harmonic mean of precision and recall).
+      \item \textbf{Metrics that aren't simple averages} --- e.g. F1 score.
     \end{itemize}
 
-    We construct Bayesian credible intervals that outperform CLT-based intervals in all settings; implemented in \textbf{\texttt{bayes\_evals}}.
+    We construct Bayesian credible intervals that outperform CLT-based intervals in all settings (available in \textbf{\texttt{bayes\_evals}}).
 
   \end{exampleblock}
 
+
+  \vspace{-0.75em}
   \begin{alertblock}{6. Recommendations}
-
-
 
     % two-column of figures
     \begin{columns}
       \begin{column}{0.7\textwidth}
-        \begin{itemize}
-          \item \textbf{IID setting}: use Bayesian Beta-Bernoulli credible intervals or Wilson-score confidence intervals via \textbf{\texttt{scipy}} or equivalent.
+        % \vspace{-1.5em}
 
-          \item \textbf{Other settings}: use Bayesian credible intervals as implemented in our simple package \textbf{\texttt{bayes\_evals}}.
+        \begin{itemize}
+          \item \textbf{IID setting:} use \textbf{Beta-Bernoulli} credible intervals or \textbf{Wilson score} confidence intervals via \textbf{\texttt{scipy}} or equivalent.
+
+          \item \textbf{Other settings:} use \textbf{Bayesian credible intervals} as implemented in our simple package \textbf{\texttt{bayes\_evals}}.
         \end{itemize}
+        % \vspace{-0.5em}
       \end{column}
       \begin{column}{0.3\textwidth}
         \vspace{1em}
         \begin{figure}
           \centering
-          \includegraphics[width=0.6\textwidth]{fig/arxiv_qr.png}
+          \includegraphics[width=0.5\textwidth]{fig/arxiv_qr.png}
           % \caption{}
         \end{figure}
 
@@ -187,7 +197,7 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
 
         \begin{figure}
           \centering
-          \includegraphics[width=0.6\textwidth]{fig/github_qr.png}
+          \includegraphics[width=0.5\textwidth]{fig/github_qr.png}
           % \caption{}
         \end{figure}
       \end{column}
@@ -206,3 +216,10 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
 
 \separatorcolumn
 \end{columns}
+
+\begin{tikzpicture}[remember picture,overlay]
+  \node [anchor=north east, inner sep=1cm] at ([xshift=-2.75,yshift=-2.5cm]current page.north east) {
+      \includegraphics[height=5.25cm]{fig/logos/joint3.pdf}
+    };
+\end{tikzpicture}
+
