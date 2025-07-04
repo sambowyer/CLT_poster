@@ -9,7 +9,8 @@
 
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage[size=custom,width=120,height=72,scale=1.0]{beamerposter}
+% \usepackage[size=custom,width=120,height=72,scale=1.0]{beamerposter}
+\usepackage[size=a0,orientation=landscape,scale=1.0]{beamerposter}
 \usetheme{gemini}
 \usecolortheme{bristol}
 \usepackage{graphicx}
@@ -143,11 +144,16 @@
       \rule{0.8\textwidth}{0.4pt}
     \end{center}
 
-    \textbf{CLT-based confidence interval} on binary data $y_i \in \{0, 1\}$ (incorrect/correct) for $i=1,\ldots,N$, with standard error $\sqrt{\bar{y}(1-\bar{y})/N}$:
+    % \textbf{CLT-based confidence interval} on binary data $y_i \in \{0, 1\}$ (incorrect/correct) for $i=1,\ldots,N$, with standard error $\sqrt{\bar{y}(1-\bar{y})/N}$:
+    \textbf{CLT-based confidence interval} on binary data 
+    $$ y_i = \begin{cases} 0 & \text{question } i \text{ answered incorrectly} \\ 1 & \text{question } i \text{ answered correctly} \end{cases} $$
+    for $i=1,\ldots,N$, with standard error $SE(\bar{y}) = \sqrt{\bar{y}(1-\bar{y})/N}$:
     $$
     \text{CI}_{1-\alpha} = \bar{y} \pm z_{\alpha/2} \text{SE}(\bar{y}),
     $$
     where $z_{\alpha/2}$ is the $(1-\alpha/2)$-th quantile of $\mathcal{N}(0, 1)$.
+    % \\
+    % That is, we model the true probability of success $\theta$ as $\mathcal{N}(\bar{y}, \text{SE}(\bar{y}))$.
 
     \begin{figure}
       \centering
@@ -163,10 +169,19 @@
   \begin{exampleblock}{2. Simulation Setup}
 
     \begin{enumerate}
-      \item \textbf{Synthetic datasets}: $N$ samples $y_i \sim \text{Ber}(\theta)$, $\theta \sim \text{Uniform}[0, 1]$.
-      \item \textbf{Construct intervals with various confidence levels} $1-\alpha \in [0.8, 0.995]$.
+      \item \textbf{Synthetic datasets}: Draw probability of success 
+      $$\theta \sim \text{Uniform}[0, 1],$$
+      then draw $N$ IID samples 
+      $y_i \sim \text{Ber}(\theta).$%, i=1,\ldots,N$.
+      \item \textbf{Construct intervals with various confidence levels} 
+      $$1-\alpha \in [0.8, 0.995].$$
       % \item Repeat.
-      \item \textbf{Repeat the above}, and compare different interval-construction methods via \textbf{coverage} (proportion of intervals that contain true value of $\theta$; should equal $1-\alpha$) and \textbf{interval width}.
+      \item \textbf{Repeat} the above many times, and compare different interval-construction methods via
+        \begin{itemize}
+          \Large
+          \item \textbf{Coverage} (proportion of intervals that contain true value of $\theta$; should equal $1-\alpha$)
+          \item \textbf{Interval width}
+        \end{itemize}
     \end{enumerate}
 
     % Repeat the above and compare different interval-construction methods via \textbf{coverage} (proportion of intervals that contain true value of $\theta$; should equal $1-\alpha$) and \textbf{interval width}.
@@ -227,20 +242,29 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
     \end{minted}
     \end{pbox}
 
-    % \vspace{-1.25em}
+    \vspace{-1.25em}
+    % horizontal line
+    \begin{center}
+      \rule{0.8\textwidth}{0.4pt}
+    \end{center}
+
+    \textbf{Clopper-Pearson confidence interval} --- `exact' method (will never under-cover). 
+    Includes all possible values of $\theta_0$ that are \textit{not} possible to reject at the $1-\alpha$ level with the null hypothesis $H_0: \theta = \theta_0$.
+
+    % code
+    \begin{pbox}[label={ex:clopper_simple}]{Clopper-Pearson Confidence Interval}
+      \begin{minted}[fontsize=\large,breaklines]{python}
+  result = scipy.stats.binomtest(k=sum(y), n=N)
+  clop_ci = result.proportion_ci("exact", 0.95)
+      \end{minted}
+      \end{pbox}
+
     % % horizontal line
     % \begin{center}
     %   \rule{0.8\textwidth}{0.4pt}
     % \end{center}
 
-    % \textbf{Clopper-Pearson interval}: 'exact' method (will never under-cover).
-
-    % \textbf{Bootstrap interval}: quantile-based interval on $\hat{\theta} = \bar{y}$ from resampled data.
-
-    % % horizontal line
-    % \begin{center}
-    %   \rule{0.8\textwidth}{0.4pt}
-    % \end{center}
+    % \textbf{Bootstrap}: quantile-based interval on $\hat{\theta} = \bar{y}$ from resampled data.
   
   \end{block}
 
@@ -265,6 +289,16 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
   \begin{exampleblock}{5. Other Settings}
 
     \begin{itemize}
+      \item \textbf{Mismatched Prior} --- Same methods, different prior for data generation e.g. 
+      $\text{Beta}(100,20), \quad \mathbb{E}[\theta] = 0.83, \quad \text{Var}[\theta] = 0.034^2.$ \\
+      \vspace{-0.75em}
+      \begin{figure}
+        \centering
+        \includegraphics[width=0.95\textwidth]{fig/PLOTS_FINAL_GREY/pdfs/exp4-1_beta-100-20_mismatch_alpha_only.pdf}
+        % \vspace{-1em}
+        % \caption{\textbf{Clustered questions setting}: with $N_t = 5$ questions per task.}
+      \end{figure}
+      \vspace{-0.5em}
       \item \textbf{Clustered Questions} --- $T$ tasks, each with $N_t$ IID questions.
       Clustered CLT uses a different standard error formulation:
       $$
@@ -277,16 +311,16 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
         \theta &\sim \text{Beta}(1, 1), \quad 
         &&d \sim \text{Gamma}(1, 1), \quad \\
         \theta_t &\sim \text{Beta}(d \theta, d (1-\theta)), \quad
-        y_{i,&&t} \sim \text{Bernoulli}(\theta_t).
+        &&y_{i,t} \sim \text{Bernoulli}(\theta_t).
         \end{aligned}
       $$
       
-    \begin{figure}
-      \centering
-      \includegraphics[width=0.95\textwidth]{fig/PLOTS_FINAL_GREY/pdfs/exp4-2_alpha_only.pdf}
-      % \vspace{-1em}
-      % \caption{\textbf{Clustered questions setting}: with $N_t = 5$ questions per task.}
-    \end{figure}
+      \begin{figure}
+        \centering
+        \includegraphics[width=0.95\textwidth]{fig/PLOTS_FINAL_GREY/pdfs/exp4-2_alpha_only.pdf}
+        % \vspace{-1em}
+        % \caption{\textbf{Clustered questions setting}: with $N_t = 5$ questions per task.}
+      \end{figure}
       \item \textbf{Independent Comparisons} --- Compare $\theta_A$ and $\theta_B$ for two different models, with access \textit{only} to $N_A, N_B, \bar{y}_A,$ and $\bar{y}_B$.
       \item \textbf{Paired Comparisons} --- Compare $\theta_A$ and $\theta_B$ for two different models, each with the same $N$ IID questions and access to question-level successes $\{y_{A;i}\}_{i=1}^N$ and $\{y_{B;i}\}_{i=1}^N$.
       \item \textbf{Metrics that aren't simple averages} --- e.g. F1 score.
