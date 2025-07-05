@@ -289,16 +289,16 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
   \begin{exampleblock}{5. Other Settings}
 
     \begin{itemize}
-      \item \textbf{Mismatched Prior} --- Same methods, different prior for data generation e.g. 
-      $\text{Beta}(100,20), \quad \mathbb{E}[\theta] = 0.83, \quad \text{Var}[\theta] = 0.034^2.$ \\
-      \vspace{-0.75em}
+      \item \textbf{Mismatched Prior} --- Different prior for data simulation e.g. 
+      $\theta \sim \text{Beta}(100,20), \quad \mathbb{E}[\theta] = 0.83, \quad \text{Var}[\theta] = 0.034^2.$ \\
+      % \vspace{-1em}
       \begin{figure}
         \centering
-        \includegraphics[width=0.95\textwidth]{fig/PLOTS_FINAL_GREY/pdfs/exp4-1_beta-100-20_mismatch_alpha_only.pdf}
+        \includegraphics[width=0.9\textwidth]{fig/PLOTS_FINAL_GREY/pdfs/exp4-1_beta-100-20_mismatch_alpha_only.pdf}
         % \vspace{-1em}
         % \caption{\textbf{Clustered questions setting}: with $N_t = 5$ questions per task.}
       \end{figure}
-      \vspace{-0.5em}
+      % \vspace{-0.5em}
       \item \textbf{Clustered Questions} --- $T$ tasks, each with $N_t$ IID questions.
       Clustered CLT uses a different standard error formulation:
       $$
@@ -317,7 +317,7 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
       
       \begin{figure}
         \centering
-        \includegraphics[width=0.95\textwidth]{fig/PLOTS_FINAL_GREY/pdfs/exp4-2_alpha_only.pdf}
+        \includegraphics[width=0.9\textwidth]{fig/PLOTS_FINAL_GREY/pdfs/exp4-2_alpha_only.pdf}
         % \vspace{-1em}
         % \caption{\textbf{Clustered questions setting}: with $N_t = 5$ questions per task.}
       \end{figure}
