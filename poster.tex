@@ -151,7 +151,7 @@
     $$
     \text{CI}_{1-\alpha} = \bar{y} \pm z_{\alpha/2} \text{SE}(\bar{y}),
     $$
-    where $z_{\alpha/2}$ is the $(1-\alpha/2)$-th quantile of $\mathcal{N}(0, 1)$.
+    where $z_{\alpha/2}$ is the $(\alpha/2)$-th quantile of $\mathcal{N}(0, 1)$, e.g. $z_{0.025} = 1.96$.% for $95\%$ CI.
     % \\
     % That is, we model the true probability of success $\theta$ as $\mathcal{N}(\bar{y}, \text{SE}(\bar{y}))$.
 
@@ -172,7 +172,7 @@
       \item \textbf{Synthetic datasets}: Draw probability of success 
       $$\theta \sim \text{Uniform}[0, 1],$$
       then draw $N$ IID samples 
-      $y_i \sim \text{Ber}(\theta).$%, i=1,\ldots,N$.
+      $y_i \sim \text{Bernoulli}(\theta).$%, i=1,\ldots,N$.
       \item \textbf{Construct intervals with various confidence levels} 
       $$1-\alpha \in [0.8, 0.995].$$
       % \item Repeat.
@@ -248,8 +248,9 @@ wilson_ci = result.proportion_ci("wilson", 0.95)
       \rule{0.8\textwidth}{0.4pt}
     \end{center}
 
-    \textbf{Clopper-Pearson confidence interval} --- `exact' method (will never under-cover). 
-    Includes all possible values of $\theta_0$ that are \textit{not} possible to reject at the $1-\alpha$ level with the null hypothesis $H_0: \theta = \theta_0$.
+    \textbf{Clopper-Pearson confidence interval} --- `exact' method based on cumulative binomial distribution.
+    Contains all values $\theta_0$ that won't reject a two-sided test with null $H_0: \theta = \theta_0$ at significance level $\alpha$.
+    % Includes all values of $\theta_0$ that are \textit{not} possible to reject at the $1-\alpha$ level with the null hypothesis $H_0: \theta = \theta_0$.
 
     % code
     \begin{pbox}[label={ex:clopper_simple}]{Clopper-Pearson Confidence Interval}
